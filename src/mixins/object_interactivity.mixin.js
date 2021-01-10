@@ -209,6 +209,12 @@
      * @chainable
      */
     drawControls: function(ctx, styleOverride) {
+      if (this.locked) {
+        this.setCoords();
+
+        return this;
+      }
+
       styleOverride = styleOverride || {};
       ctx.save();
       ctx.setTransform(this.canvas.getRetinaScaling(), 0, 0, this.canvas.getRetinaScaling(), 0, 0);

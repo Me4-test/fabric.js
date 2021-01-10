@@ -713,7 +713,7 @@
         };
       }
 
-      if (target) {
+      if (target && this.selectableObjects) {
         var alreadySelected = target === this._activeObject;
         if (target.selectable) {
           this.setActiveObject(target, e);
@@ -723,7 +723,7 @@
           fabric.util.isTouchEvent(e)
         );
         target.__corner = corner;
-        if (target === this._activeObject && (corner || !shouldGroup)) {
+        if (target === this._activeObject && (corner || !shouldGroup) && !target.locked) {
           this._setupCurrentTransform(e, target, alreadySelected);
           var control = target.controls[corner],
               pointer = this.getPointer(e),

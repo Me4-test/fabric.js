@@ -13,8 +13,9 @@
      */
     _shouldGroup: function(e, target) {
       var activeObject = this._activeObject;
-      return activeObject && this._isSelectionKeyPressed(e) && target && target.selectable && this.selection &&
-            (activeObject !== target || activeObject.type === 'activeSelection') && !target.onSelect({ e: e });
+      return activeObject && this._isSelectionKeyPressed(e) && target && target.selectable && this.groupSelection &&
+        (activeObject !== target || activeObject.type === 'activeSelection') && !target.onSelect({ e: e }) &&
+        this.canObjectGroup && this.canObjectGroup(target, e);
     },
 
     /**
@@ -85,11 +86,13 @@
      * @param {Object} target
      */
     _createGroup: function(target) {
+      var active_objects = this._activeObject.textbox ? [this._activeObject, this._activeObject.textbox] : [this._activeObject];
+      var target_objects = target.textbox ? [target, target.textbox] : [target];
       var objects = this._objects,
           isActiveLower = objects.indexOf(this._activeObject) < objects.indexOf(target),
           groupObjects = isActiveLower
-            ? [this._activeObject, target]
-            : [target, this._activeObject];
+            ? [...active_objects, ...target_objects]
+            : [...target_objects, ...active_objects];
       this._activeObject.isEditing && this._activeObject.exitEditing();
       return new fabric.ActiveSelection(groupObjects, {
         canvas: this

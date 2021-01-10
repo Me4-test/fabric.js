@@ -154,7 +154,7 @@ fabric.util.object.extend(fabric.IText.prototype, /** @lends fabric.IText.protot
     this.__isMousedown = false;
     if (!this.editable || this.group ||
       (options.transform && options.transform.actionPerformed) ||
-      (options.e.button && options.e.button !== 1)) {
+      (options.e.button && options.e.button !== 1) || this.locked) {
       return;
     }
 

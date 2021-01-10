@@ -261,22 +261,23 @@ else {
         console.log('Built distribution to ' + distributionPath + 'fabric.js');
       }
 
-      exec(mininfierCmd, function (error, output) {
-        if (error) {
-          console.error('Minification failed using', minifier, 'with', mininfierCmd);
-          console.error('Minifier error output:\n' + error);
-          process.exit(1);
-        }
-        console.log('Minified using', minifier, 'to ' + distributionPath + 'fabric.min.js');
-
-        if (sourceMapFlags) {
-          console.log('Built sourceMap to ' + distributionPath + 'fabric.min.js.map');
-        }
-
-        exec('gzip -c fabric.min.js > fabric.min.js.gz', function (error, output) {
-          console.log('Gzipped to ' + distributionPath + 'fabric.min.js.gz');
-        });
-      });
+      // Minifier disabled
+      // exec(mininfierCmd, function (error, output) {
+      //   if (error) {
+      //     console.error('Minification failed using', minifier, 'with', mininfierCmd);
+      //     console.error('Minifier error output:\n' + error);
+      //     process.exit(1);
+      //   }
+      //   console.log('Minified using', minifier, 'to ' + distributionPath + 'fabric.min.js');
+      //
+      //   if (sourceMapFlags) {
+      //     console.log('Built sourceMap to ' + distributionPath + 'fabric.min.js.map');
+      //   }
+      //
+      //   exec('gzip -c fabric.min.js > fabric.min.js.gz', function (error, output) {
+      //     console.log('Gzipped to ' + distributionPath + 'fabric.min.js.gz');
+      //   });
+      // });
 
     });
   });

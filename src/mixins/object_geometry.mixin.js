@@ -66,6 +66,10 @@
      */
     controls: { },
 
+    locked: false,
+
+    id: null,
+
     /**
      * return correct set of coordinates for intersection
      * this will return either aCoords or lineCoords.

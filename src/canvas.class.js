@@ -138,11 +138,23 @@
     interactive:            true,
 
     /**
+     * @type Boolean
+     * @default
+     */
+    selectableObjects:      true,
+
+    /**
      * Indicates whether group selection should be enabled
      * @type Boolean
      * @default
      */
     selection:              true,
+
+    /**
+     * @type Boolean
+     * @default
+     */
+    groupSelection:         false,
 
     /**
      * Indicates which key or keys enable multiple click selection
@@ -1148,6 +1160,9 @@
         return false;
       }
       if (!this._discardActiveObject(e, object)) {
+        return false;
+      }
+      if (this.canObjectSelect && !this.canObjectSelect(object, e)) {
         return false;
       }
       if (object.onSelect({ e: e })) {

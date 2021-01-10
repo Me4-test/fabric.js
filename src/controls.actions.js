@@ -33,8 +33,8 @@
         canvas = target.canvas,
         canvasOptions = fabric.util.object.clone(options);
     canvasOptions.target = target;
-    canvas && canvas.fire('object:' + eventName, canvasOptions);
     target.fire(eventName, options);
+    canvas && canvas.fire('object:' + eventName, canvasOptions);
   }
 
   /**
@@ -44,6 +44,9 @@
    * @return {Boolean} true if scale is proportional
    */
   function scaleIsProportional(eventData, fabricObject) {
+    if (fabricObject.needCustomUniformToggled) {
+      return fabricObject.customUniformToggled;
+    }
     var canvas = fabricObject.canvas, uniScaleKey = canvas.uniScaleKey,
         uniformIsToggled = eventData[uniScaleKey];
     return (canvas.uniformScaling && !uniformIsToggled) ||

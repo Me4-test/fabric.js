@@ -11,6 +11,9 @@ fabric.util.object.extend(fabric.IText.prototype, /** @lends fabric.IText.protot
     this.hiddenTextarea.setAttribute('spellcheck', 'false');
     this.hiddenTextarea.setAttribute('data-fabric-hiddentextarea', '');
     this.hiddenTextarea.setAttribute('wrap', 'off');
+
+    this.customTextareaAttributes && this.customTextareaAttributes(this.hiddenTextarea);
+
     var style = this._calcTextareaPosition();
     // line-height: 1px; was removed from the style to fix this:
     // https://bugs.chromium.org/p/chromium/issues/detail?id=870966
@@ -88,6 +91,11 @@ fabric.util.object.extend(fabric.IText.prototype, /** @lends fabric.IText.protot
     if (!this.isEditing) {
       return;
     }
+
+    if (this.customKeyDown && this.customKeyDown(e)) {
+      return;
+    }
+
     if (e.keyCode in this.keysMap) {
       this[this.keysMap[e.keyCode]](e);
     }
@@ -121,6 +129,11 @@ fabric.util.object.extend(fabric.IText.prototype, /** @lends fabric.IText.protot
       this._copyDone = false;
       return;
     }
+
+    if (this.customKeyUp && this.customKeyUp(e)) {
+      return;
+    }
+
     if ((e.keyCode in this.ctrlKeysMapUp) && (e.ctrlKey || e.metaKey)) {
       this[this.ctrlKeysMapUp[e.keyCode]](e);
     }
@@ -143,6 +156,9 @@ fabric.util.object.extend(fabric.IText.prototype, /** @lends fabric.IText.protot
     if (!this.isEditing) {
       return;
     }
+
+    this.handleInput && this.handleInput(this.hiddenTextarea);
+
     // decisions about style changes.
     var nextText = this._splitTextIntoLines(this.hiddenTextarea.value).graphemeText,
         charCount = this._text.length,

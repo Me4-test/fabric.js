@@ -159,9 +159,12 @@
       this._restoreObjectsState();
       fabric.util.resetObjectTransform(this);
       if (object) {
-        this._objects.push(object);
-        object.group = this;
-        object._set('canvas', this.canvas);
+        var objects = object.textbox ? [object, object.textbox] : [object];
+        objects.forEach(function(obj) {
+          this._objects.push(obj);
+          obj.group = this;
+          obj._set('canvas', this.canvas);
+        });
       }
       this._calcBounds();
       this._updateObjectsCoords();
@@ -180,7 +183,8 @@
       this._restoreObjectsState();
       fabric.util.resetObjectTransform(this);
 
-      this.remove(object);
+      var objects = object.textbox ? [object, object.textbox] : [object];
+      this.remove(...objects);
       this._calcBounds();
       this._updateObjectsCoords();
       this.setCoords();
