@@ -695,6 +695,9 @@
       this._previousPointer = pointer;
       var shouldRender = this._shouldRender(target),
           shouldGroup = this._shouldGroup(e, target);
+      if (shouldGroup && !(this.canObjectGroup && this.canObjectGroup(target, e))) {
+        return;
+      }
       if (this._shouldClearSelection(e, target)) {
         this.discardActiveObject(e);
       }

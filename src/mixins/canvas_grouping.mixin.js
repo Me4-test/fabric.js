@@ -14,8 +14,7 @@
     _shouldGroup: function(e, target) {
       var activeObject = this._activeObject;
       return activeObject && this._isSelectionKeyPressed(e) && target && target.selectable && this.groupSelection &&
-        (activeObject !== target || activeObject.type === 'activeSelection') && !target.onSelect({ e: e }) &&
-        this.canObjectGroup && this.canObjectGroup(target, e);
+        (activeObject !== target || activeObject.type === 'activeSelection') && !target.onSelect({ e: e });
     },
 
     /**

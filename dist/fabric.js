@@ -10953,7 +10953,10 @@ fabric.ElementsParser = function(elements, callback, options, reviver, parsingOp
      * @chainable true
      */
     setViewportTransform: function (vpt) {
-      var activeObject = this._activeObject, object, i, len;
+      var activeObject = this._activeObject,
+          backgroundObject = this.backgroundImage,
+          overlayObject = this.overlayImage,
+          object, i, len;
       this.viewportTransform = vpt;
       for (i = 0, len = this._objects.length; i < len; i++) {
         object = this._objects[i];
@@ -10961,6 +10964,12 @@ fabric.ElementsParser = function(elements, callback, options, reviver, parsingOp
       }
       if (activeObject) {
         activeObject.setCoords();
+      }
+      if (backgroundObject) {
+        backgroundObject.setCoords(true);
+      }
+      if (overlayObject) {
+        overlayObject.setCoords(true);
       }
       this.calcViewportBoundaries();
       this.renderOnAddRemove && this.requestRenderAll();
@@ -14997,6 +15006,9 @@ fabric.PatternBrush = fabric.util.createClass(fabric.PencilBrush, /** @lends fab
       this._previousPointer = pointer;
       var shouldRender = this._shouldRender(target),
           shouldGroup = this._shouldGroup(e, target);
+      if (shouldGroup && !(this.canObjectGroup && this.canObjectGroup(target, e))) {
+        return;
+      }
       if (this._shouldClearSelection(e, target)) {
         this.discardActiveObject(e);
       }
@@ -15323,8 +15335,7 @@ fabric.PatternBrush = fabric.util.createClass(fabric.PencilBrush, /** @lends fab
     _shouldGroup: function(e, target) {
       var activeObject = this._activeObject;
       return activeObject && this._isSelectionKeyPressed(e) && target && target.selectable && this.groupSelection &&
-        (activeObject !== target || activeObject.type === 'activeSelection') && !target.onSelect({ e: e }) &&
-        this.canObjectGroup && this.canObjectGroup(target, e);
+        (activeObject !== target || activeObject.type === 'activeSelection') && !target.onSelect({ e: e });
     },
 
     /**
@@ -16962,7 +16973,6 @@ fabric.util.object.extend(fabric.StaticCanvas.prototype, /** @lends fabric.Stati
           this.group.set('dirty', true);
         }
       }
-
       return this;
     },
 
@@ -21847,8 +21857,8 @@ fabric.util.object.extend(fabric.Object.prototype, /** @lends fabric.Object.prot
       this._restoreObjectsState();
       fabric.util.resetObjectTransform(this);
       if (object) {
-        const objects = object.textbox ? [object, object.textbox] : [object];
-        objects.forEach(obj => {
+        var objects = object.textbox ? [object, object.textbox] : [object];
+        objects.forEach(function(obj) {
           this._objects.push(obj);
           obj.group = this;
           obj._set('canvas', this.canvas);
@@ -21871,7 +21881,7 @@ fabric.util.object.extend(fabric.Object.prototype, /** @lends fabric.Object.prot
       this._restoreObjectsState();
       fabric.util.resetObjectTransform(this);
 
-      const objects = object.textbox ? [object, object.textbox] : [object];
+      var objects = object.textbox ? [object, object.textbox] : [object];
       this.remove(...objects);
       this._calcBounds();
       this._updateObjectsCoords();
@@ -27329,9 +27339,9 @@ fabric.Image.filters.BaseFilter.fromObject = function(object, callback) {
     return;
   }
 
-  var styleProps =
-    'fontFamily fontWeight fontSize text underline overline linethrough' +
-    ' textAlign fontStyle lineHeight textBackgroundColor charSpacing styles path'.split(' ');
+  var additionalProps =
+    ('fontFamily fontWeight fontSize text underline overline linethrough' +
+    ' textAlign fontStyle lineHeight textBackgroundColor charSpacing styles path').split(' ');
 
   /**
    * Text class
@@ -27491,13 +27501,13 @@ fabric.Image.filters.BaseFilter.fromObject = function(object, callback) {
      * as well as for history (undo/redo) purposes
      * @type Array
      */
-    stateProperties: fabric.Object.prototype.stateProperties.concat(styleProps),
+    stateProperties: fabric.Object.prototype.stateProperties.concat(additionalProps),
 
     /**
      * List of properties to consider when checking if cache needs refresh
      * @type Array
      */
-    cacheProperties: fabric.Object.prototype.cacheProperties.concat(styleProps),
+    cacheProperties: fabric.Object.prototype.cacheProperties.concat(additionalProps),
 
     /**
      * When defined, an object is rendered via stroke and this property specifies its color.
